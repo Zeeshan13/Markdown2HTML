@@ -106,6 +106,12 @@ def fix_github_image_links(md_content):
     image_pattern = re.compile(r'!\[.*?\]\((.*?)\)')
     return image_pattern.sub(replace_github_link, md_content)
 
+def remove_pilcrow_from_html(html_content):
+    """
+    Removes pilcrow (¶) symbols from the HTML content
+    """
+    return re.sub(r'&para;', '', html_content)
+
 def convert_md_to_html(md_content, css_filename="styles.css"):
     """
     Convert markdown content to HTML with proper styling and image handling
@@ -119,10 +125,13 @@ def convert_md_to_html(md_content, css_filename="styles.css"):
         extensions=[
             CodeHiliteExtension(linenums=False),
             'fenced_code',
-            TocExtension(permalink=True),
+            TocExtension(permalink=True),  # You can try disabling this if the problem persists
             'md_in_html'
         ],
     )
+    
+    # Remove pilcrow symbol from the HTML output
+    html_content = remove_pilcrow_from_html(html_content)
     
     # Create HTML document with error handling
     html_with_css = f"""<!DOCTYPE html>
